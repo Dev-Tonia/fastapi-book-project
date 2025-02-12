@@ -1,8 +1,6 @@
 name: test # The name that appears in your GitHub Actions tab
 
 on: # Defines when this workflow runs
-  push:
-    branches: [main] # Runs when code is pushed to main branch
   pull_request:
     branches: [main] # Runs when a PR is created to main branch
 
