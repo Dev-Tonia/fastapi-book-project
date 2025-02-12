@@ -1,24 +1,32 @@
-name: deploy # The name that appears in your GitHub Actions tab
+name: CI/CD - Deploy FastAPI
 
-on: # Defines when this workflow runs
+on:
   push:
-    branches: [main] # Runs when code is pushed to main branch
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
-jobs: # The actual work to be done
-  deploy: # This job is named "test"
-    runs-on: ubuntu-latest # Uses the latest Ubuntu virtual machine
+jobs:
+  deploy:
+    name: Deploy to Server
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    steps: # Sequential steps to execute
-      - name: deploy to aws ec2 # Sets up Python environment
-        uses: appleboy/ssh-action@v0.1.10
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ubuntu
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            cd /home/ubuntu/fastapi-book-project
+      - name: Install SSHPass
+        run: sudo apt-get install -y sshpass
+
+      - name: Deploy via SSH
+        run: |
+          sshpass -p "${{ secrets.SERVER_PASS }}" ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << EOF
+            cd fastapi-book-project
+            git stash
             git pull origin main
-            source /home/ubuntu/fastapi-book-project/venv/bin/activate  
-            pip install -r requirements.txt               
-            sudo systemctl daemon-reload
-            sudo systemctl restart fastapi.service
+            source venv/bin/activate
+            pip install -r requirements.txt
+            # Restart FastAPI service
+            sudo systemctl restart fastapi-dev-tonia
+          EOF
