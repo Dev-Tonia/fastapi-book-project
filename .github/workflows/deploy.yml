@@ -22,4 +22,5 @@ jobs: # The actual work to be done
             git pull origin main
             source /home/ubuntu/fastapi-book-project/venv/bin/activate  
             pip install -r requirements.txt               
-            sudo systemctl restart fastapi
+            sudo systemctl daemon-reload
+            sudo systemctl restart fastapi.service
