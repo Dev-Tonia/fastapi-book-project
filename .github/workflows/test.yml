@@ -1,4 +1,4 @@
-name: test # The name that appears in your GitHub Actions tab
+name: Test FastAPI # The name that appears in your GitHub Actions tab
 
 on: # Defines when this workflow runs
   pull_request:
