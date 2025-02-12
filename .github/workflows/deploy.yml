@@ -1,19 +1,20 @@
 name: Deploy FastAPI
 
 on:
-  workflow_run:
-    workflows: ["Test FastAPI"] # Must match the name in test.yml
-    types:
-      - completed
+  push:
+    branches:
+      - main
 
 jobs:
   deploy:
     name: Deploy to Server
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }} # Ensures deploy runs only if tests pass
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
+      - name: Install SSHPass
+        run: sudo apt-get install -y sshpass
 
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v0.1.8
@@ -27,5 +28,5 @@ jobs:
             git pull origin main
             source venv/bin/activate
             pip install -r requirements.txt
-            # Restart FastAPI service (now passwordless)
+            # Restart FastAPI service
             sudo systemctl restart fastapi-dev-tonia
