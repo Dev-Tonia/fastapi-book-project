@@ -13,9 +13,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Install SSHPass
-        run: sudo apt-get install -y sshpass
-
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v0.1.8
         with:
@@ -28,5 +25,5 @@ jobs:
             git pull origin main
             source venv/bin/activate
             pip install -r requirements.txt
-            # Restart FastAPI service
+            # Restart FastAPI service (now passwordless)
             sudo systemctl restart fastapi-dev-tonia
