@@ -5,12 +5,10 @@ on: # Defines when this workflow runs
     branches: [main] # Runs when code is pushed to main branch
 
 jobs: # The actual work to be done
-  test: # This job is named "test"
+  deploy: # This job is named "test"
     runs-on: ubuntu-latest # Uses the latest Ubuntu virtual machine
 
     steps: # Sequential steps to execute
-      - uses: actions/checkout@v2 # Clones your repository code
-
       - name: deploy to aws ec2 # Sets up Python environment
         uses: appleboy/ssh-action@v0.1.10
         with:
