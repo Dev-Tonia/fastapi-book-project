@@ -72,12 +72,3 @@ async def get_book(book_id: int) -> Book:
             detail=f"Book not found"
         )
     return book
-@router.get("/search", response_model=list[Book], status_code=status.HTTP_200_OK)
-async def search_books(query: str) -> list[Book]:
-    books = db.search_books(query)
-    if not books:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"No books found matching query: {query}"
-        )
-    return books 
