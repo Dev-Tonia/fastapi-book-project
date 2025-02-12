@@ -1,0 +1,25 @@
+name: deploy # The name that appears in your GitHub Actions tab
+
+on: # Defines when this workflow runs
+  push:
+    branches: [main] # Runs when code is pushed to main branch
+
+jobs: # The actual work to be done
+  test: # This job is named "test"
+    runs-on: ubuntu-latest # Uses the latest Ubuntu virtual machine
+
+    steps: # Sequential steps to execute
+      - uses: actions/checkout@v2 # Clones your repository code
+
+      - name: deploy to aws ec2 # Sets up Python environment
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd /home/ubuntu/fastapi-book-project
+            git pull origin main
+            source /home/ubuntu/fastapi-book-project/venv/bin/activate  
+            pip install -r requirements.txt               
+            sudo systemctl restart fastapi
